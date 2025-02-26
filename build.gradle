@@ -1,0 +1,65 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.4.3'
+    id 'io.spring.dependency-management' version '1.1.7'
+    id 'org.openapi.generator' version '7.11.0'
+}
+
+group = 'org.example'
+version = '0.0.1-SNAPSHOT'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+
+    // Dependencies from the generated pom.xml:
+    // Spring Data Commons (if needed by the generated code)
+    implementation 'org.springframework.data:spring-data-commons'
+    // SpringDoc for OpenAPI UI support
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0'
+    // For @Nullable annotations support
+    implementation 'com.google.code.findbugs:jsr305:3.0.2'
+    // YAML data format support for Jackson
+    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml'
+    // Java 8+ date/time support for Jackson
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
+    // Nullable support for Jackson databind
+    implementation 'org.openapitools:jackson-databind-nullable:0.2.6'
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.boot:spring-boot-testcontainers'
+    testImplementation 'org.testcontainers:junit-jupiter'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+openApiGenerate {
+    generatorName = "spring"
+    inputSpec = "$rootDir/src/main/resources/MoneyTransferServiceSpecification.yaml"
+    outputDir = "$rootDir"
+    apiPackage = "org.example.api"
+    modelPackage = "org.example.model"
+    configOptions = [
+            dateLibrary: "java17",
+            interfaceOnly: "true",
+            useSpringBoot3: "true"
+    ]
+}
+
+tasks.named("openApiGenerate") {
+    doNotTrackState("Disabling state tracking because the generated code is intended for manual edits")
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
