@@ -1,8 +1,8 @@
 package org.example.repository;
 
 import org.springframework.stereotype.Repository;
-
 import java.util.*;
+
 
 @Repository
 public class CardRepository {
@@ -21,9 +21,9 @@ public class CardRepository {
         cardList.add(card2);
 
         cardMap = new HashMap<>();
-        cardMap.put(card1.getNumber(), card1);
-        cardMap.put(card2.getNumber(), card2);
-        cardMap.put(card3.getNumber(), card3);
+        cardMap.put(card1.number(), card1);
+        cardMap.put(card2.number(), card2);
+        cardMap.put(card3.number(), card3);
     }
 
     public Optional<Card> getCardByNumber(String number) {
@@ -35,12 +35,9 @@ public class CardRepository {
     }
 
     public boolean isValidCard(String number, String cvc, String validTill) {
-        if (cardMap.containsKey(number)
-                && cardMap.get(number).getCvc().equals(cvc)
-                && cardMap.get(number).getValidTill().equals(validTill)) {
-            return true;
-        } else {
-            return false;
+        if (cardMap.containsKey(number)) {
+            return cardMap.get(number).cvc().equals(cvc) && cardMap.get(number).validTill().equals(validTill);
         }
+        return false;
     }
 }
